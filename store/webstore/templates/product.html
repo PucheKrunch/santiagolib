@@ -5,14 +5,39 @@
 <div class="container">
     <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
         <div class="my-3 p-3">
-            <h2 class="display-5">{{product.name}}</h2>
+            <h1 class="display-5">{{product.name}}</h1>
+            <h3>{{product.author}}</h3>
+            <h3>Editorial {{product.publisher}}</h3>
             <p class="lead">{{product.description}}</p>
+            <p >Categoría: {{product.genre}}</p>
         </div>
         <img src="{{product.imageURL}}" style="border-radius: 21px 21px 21px 21px;">
         <div class="my-3 p-3">
-            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-success add-btn update-cart">Agregar al carrito</button>
+            <a class="btn btn-outline-success" href="#">Comprar</a>
         </div>
     </div>
 </div>
 
+{% if flag != 0 %}
+    <hr>
+    <div class="container">
+        <br>
+        <h3>Sugerencias</h3>
+        <div class="row">
+            {% for product in sug %}
+            <div class="col-lg-4">
+                <img class="thumbnail" src="{{product.imageURL}}">
+                <div class="box-element product">
+                    <h6><strong>{{product.name}}</strong></h6>
+                    <input type="hidden" name="item_id" value="{{ product.id }}">
+                    <hr>
+                    <a class="btn btn-outline-success" href="#">Comprar</a>
+                    <a class="btn btn-outline-secondary" href="/product/{{ product.id }}">Más información</a>
+                    <h4 style="display: inline-block; float: right"><strong>${{product.price|floatformat:2}}</strong></h4>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

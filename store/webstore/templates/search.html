@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<br>
+<br>
 <div class="container">
     <form class="form-inline" method="POST" action="">
         {% csrf_token %}
         <br>
-        <input class="form-control mr-sm-2" type="search" placeholder="Objeto" aria-label="Search" name="searched" value="{{ item_searched }}">
+        <input class="form-control mr-sm-2" type="search" placeholder="Introduce el título del libro a buscar" aria-label="Search" name="searched" value="{{ item_searched }}">
     </form>
 </div>
 
@@ -23,9 +24,10 @@
             <img class="thumbnail" src="{{product.imageURL}}">
             <div class="box-element product">
                 <h6><strong>{{product.name}}</strong></h6>
+                <input type="hidden" name="item_id" value="{{ product.id }}">
                 <hr>
-                <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Agregar al carrito</button>
-                <a class="btn btn-outline-success" href="/product/{{ product.id }}">Ver más</a>
+                <a class="btn btn-outline-success" href="#">Comprar</a>
+                <a class="btn btn-outline-secondary" href="/product/{{ product.id }}">Más información</a>
                 <h4 style="display: inline-block; float: right"><strong>${{product.price|floatformat:2}}</strong></h4>
             </div>
         </div>

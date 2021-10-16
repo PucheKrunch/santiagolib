@@ -13,16 +13,14 @@
 
     <link rel="stylesheet" type="text/css" href="{% static '/main.css' %}">
 
-    <title>StarShirts</title>
-
-    <link rel = "icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+    <title>Tienda de libros</title>
 
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <img src="{% static 'images/logo.png' %}" style="margin-left: 15px;">
-        <a class="navbar-brand">StarShirts</a>
+    <br>
+    <br>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" style="margin-left: 15px;">Librería</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,10 +28,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Panel de administrador</a>
+                    <a class="nav-link disabled" href="#">Panel de administrador ({{ role }})</a>
                 </li>
             </ul>
         </div>
@@ -52,17 +47,41 @@
         <br>
         <form method="POST" action="{% url 'addproduct' %}" enctype="multipart/form-data">
             {% csrf_token %}
+            <h1>Agregar libro</h1>
+            <hr>
             <div class="form-group">
-                <h4>Nombre del producto</h4>
-                <input type="text" class="form-control" placeholder="Producto" value="{{ name }}" name="name">
+                <h4>Título</h4>
+                <input type="text" class="form-control" placeholder="Título del libro" value="{{ name }}" name="name">
             </div>
             <div class="form-group">
-                <h4>Precio</h4>
-                <input type="number" class="form-control" placeholder="$0000.00" value="{{ price }}" name="price">
+                <h4>Autor</h4>
+                <input type="text" class="form-control" placeholder="Autor del libro" value="{{ author }}" name="author">
+            </div>
+            {% if request.user.is_superuser %}
+                <div class="form-group">
+                    <h4>Editorial</h4>
+                    <input type="text" class="form-control" placeholder="Editorial del libro" value="{{ publisher }}" name="publisher">
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <h4>Género</h4>
+                <select class="form-select" name="genre" value="{{ genre }}">
+                    <option value="Fantasía">Fantasía</option>
+                    <option value="Ciencía ficción">Ciencía ficción</option>
+                    <option value="Terror">Terror</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <h4>Precio del libro</h4>
+                <input type="number" class="form-control" placeholder="(Por unidad)" value="{{ price }}" name="price">
             </div>
             <div class="form-group">
                 <h4>Descripción</h4>
-                <input type="text" class="form-control" placeholder="Breve descripción del producto" value="{{ description }}" name="description">
+                <input type="text" class="form-control" placeholder="Breve descripción del libro" value="{{ description }}" name="description">
+            </div>
+            <div class="form-group">
+                <h4>Piezas disponibles</h4>
+                <input type="number" class="form-control" placeholder="Cantidad de libros disponible" value="{{ quantity }}" name="quantity">
             </div>
             <div class="form-group">
                 <h4>Imagen (640px x 360px)</h4>
@@ -72,6 +91,17 @@
         </form>
     </div>
     <hr>
+
+    <div class="container">
+        <br>
+        {% for product in products %}
+            <h6><strong>{{product.name}}</strong></h6>
+            <input type="hidden" name="item_id" value="{{ product.id }}">
+            <a class="btn btn-outline-danger" href="/delp/{{ product.id }}">Eliminar</a>
+            <hr>
+        {% endfor %}
+    </div>
+    <br>
 
 
     <style>

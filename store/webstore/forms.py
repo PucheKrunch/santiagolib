@@ -13,9 +13,9 @@ class CreateUserForm(UserCreationForm):
 class addClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['role']
+        fields = ['publisher']
 
 class addProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name','price','description','image']
+        fields = ['name','price','description','image','author','publisher','quantity','genre']
