@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h2 class="display-5">{{product.name}}</h2>
+            <p class="lead">{{product.description}}</p>
+        </div>
+        <img src="{{product.imageURL}}" style="border-radius: 21px 21px 21px 21px;">
+        <div class="my-3 p-3">
+            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-success add-btn update-cart">Agregar al carrito</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
