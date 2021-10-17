@@ -1,1 +1,1 @@
-web: gunicorn store.store.wsgi --log-file -
+web: gunicorn --chdir store store.wsgi
