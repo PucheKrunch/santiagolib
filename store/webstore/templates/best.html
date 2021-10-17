@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h1 class="display-5">{{product.name}}</h1>
+            <h3>{{product.author}}</h3>
+            <h3>Editorial {{product.publisher}}</h3>
+            <p class="lead">{{product.description}}</p>
+            <p >Categoría: {{product.genre}}</p>
+            <p >{{product.selled}} vendidos</p>
+        </div>
+        <img src="{{product.imageURL}}" style="border-radius: 21px 21px 21px 21px;">
+        <div class="my-3 p-3">
+            <a class="btn btn-outline-success" href="/checkout/{{ product.id }}">Comprar</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

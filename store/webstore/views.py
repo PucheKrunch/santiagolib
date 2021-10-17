@@ -200,7 +200,7 @@ def payment(request):
         form = OrderForm(request.POST or None)
         product = Product.objects.get(pk=request.POST['item'])
         if form.is_valid():
-            if int(request.POST['quantity']) > int(product.quantity):
+            if int(request.POST['quantity']) > int(product.quantity) and int(product.quantity) > 0:
                 first_order = int(product.quantity)
                 second_order = int(request.POST['quantity']) - int(product.quantity)
                 if request.POST['shiping'] == "DHL":
@@ -216,6 +216,7 @@ def payment(request):
                     client = request.user,
                     item = product,
                     status = "En proceso",
+                    publisher = request.POST['publisher'],
                     shiping = request.POST['shiping'],
                     paying = request.POST['paying'],
                     address = request.POST['address'],
@@ -226,11 +227,31 @@ def payment(request):
                     client = request.user,
                     item = product,
                     status = "Pendiente",
+                    publisher = request.POST['publisher'],
                     shiping = request.POST['shiping'],
                     paying = request.POST['paying'],
                     address = request.POST['address'],
                     total = second_order_total,
                     quantity = second_order,
+                )
+            elif int(request.POST['quantity']) < int(product.quantity):
+                if request.POST['shiping'] == "DHL":
+                    total = int(product.price) * int(request.POST['quantity']) + 150
+                else:
+                    total = int(product.price) * int(request.POST['quantity']) + 500
+                product.quantity = int(product.quantity) - int(request.POST['quantity'])
+                product.selled = int(product.selled) + int(request.POST['quantity'])
+                product.save()
+                Order.objects.create(
+                    client = request.user,
+                    item = product,
+                    status = "En proceso",
+                    publisher = request.POST['publisher'],
+                    shiping = request.POST['shiping'],
+                    paying = request.POST['paying'],
+                    address = request.POST['address'],
+                    total = total,
+                    quantity = request.POST['quantity'],
                 )
             else:
                 if request.POST['shiping'] == "DHL":
@@ -243,7 +264,8 @@ def payment(request):
                 Order.objects.create(
                     client = request.user,
                     item = product,
-                    status = "En proceso",
+                    status = "Pendiente",
+                    publisher = request.POST['publisher'],
                     shiping = request.POST['shiping'],
                     paying = request.POST['paying'],
                     address = request.POST['address'],
@@ -266,3 +288,26 @@ def payment(request):
                 'product':product,
             })
     return redirect('thanks')
+
+
+def best(request):
+    product = Product.objects.order_by('selled')
+    product = list(product)[-1]
+    return render(request,'best.html',{'product':product})
+
+@login_required(login_url='login')
+def status(request):
+    if request.user.is_superuser:
+        orders = Order.objects.all().exclude(status="Entregado")
+        role = "Superusuario"
+    else:
+        role = Client.objects.get(user=User.objects.get(pk=request.user.id)).publisher
+        orders = Order.objects.filter(publisher=role).exclude(status="Entregado")
+    return render(request,'status.html',{'orders':orders,'role':role})
+
+@login_required(login_url='login')
+def update_status(request):
+    order = Order.objects.get(pk=request.POST['id'])
+    order.status = str(request.POST['status'])
+    order.save()
+    return redirect('status')
