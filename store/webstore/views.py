@@ -159,6 +159,7 @@ def add_product(request):
     messages.success(request,f"Libro {request.POST['name']} agregado correctamente")
     return redirect('home')
 
+@login_required(login_url='login')
 def product_page(request,pk):
     product = Product.objects.get(pk=int(request.path.split('/')[2]))
     sug = Product.objects.filter(genre=product.genre).exclude(pk=pk)
@@ -260,6 +261,7 @@ def payment(request):
                     total = int(product.price) * int(request.POST['quantity']) + 500
                 product.quantity = int(product.quantity) - int(request.POST['quantity'])
                 product.selled = int(product.selled) + int(request.POST['quantity'])
+                product.quantity = 0
                 product.save()
                 Order.objects.create(
                     client = request.user,
