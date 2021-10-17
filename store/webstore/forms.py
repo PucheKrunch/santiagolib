@@ -19,3 +19,8 @@ class addProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name','price','description','image','author','publisher','quantity','genre']
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['shiping','paying','address','quantity']

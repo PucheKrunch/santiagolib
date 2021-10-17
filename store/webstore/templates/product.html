@@ -13,7 +13,7 @@
         </div>
         <img src="{{product.imageURL}}" style="border-radius: 21px 21px 21px 21px;">
         <div class="my-3 p-3">
-            <a class="btn btn-outline-success" href="#">Comprar</a>
+            <a class="btn btn-outline-success" href="/checkout/{{ product.id }}">Comprar</a>
         </div>
     </div>
 </div>
@@ -31,7 +31,7 @@
                     <h6><strong>{{product.name}}</strong></h6>
                     <input type="hidden" name="item_id" value="{{ product.id }}">
                     <hr>
-                    <a class="btn btn-outline-success" href="#">Comprar</a>
+                    <a class="btn btn-outline-success" href="/checkout/{{ product.id }}">Comprar</a>
                     <a class="btn btn-outline-secondary" href="/product/{{ product.id }}">Más información</a>
                     <h4 style="display: inline-block; float: right"><strong>${{product.price|floatformat:2}}</strong></h4>
                 </div>

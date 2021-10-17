@@ -36,12 +36,13 @@ class Product(models.Model):
 class Order(models.Model):
     client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, null=True)
-    shipping = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=50, null=True, blank=True)
+    shiping = models.CharField(max_length=50, null=True)
     paying = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=200, null=True)
     total = models.FloatField(default=0)
     quantity = models.FloatField(null=True, blank=True)
+    item = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return str(self.client)

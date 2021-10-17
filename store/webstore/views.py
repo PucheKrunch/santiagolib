@@ -173,3 +173,96 @@ def product_page(request,pk):
 def del_product(request,pk):
     Product.objects.filter(pk=pk).delete()
     return redirect('apanel')
+
+@login_required(login_url='login')
+def my_orders(request,pk):
+    print(list(Order.objects.filter(client=request.user)))
+    orders = Order.objects.filter(client=request.user)
+    return render(request,'myorders.html',{
+        'orders':orders,
+    })
+
+@login_required(login_url='login')
+def checkout(request,pk):
+    product = Product.objects.get(pk=int(request.path.split('/')[2]))
+    context = {
+        'product':product,
+    }
+    return render(request,'checkout.html',context)
+
+@login_required(login_url='login')
+def thanks(request):
+    return render(request,'thanks.html',{})
+
+@login_required(login_url='login')
+def payment(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST or None)
+        product = Product.objects.get(pk=request.POST['item'])
+        if form.is_valid():
+            if int(request.POST['quantity']) > int(product.quantity):
+                first_order = int(product.quantity)
+                second_order = int(request.POST['quantity']) - int(product.quantity)
+                if request.POST['shiping'] == "DHL":
+                    first_order_total = first_order * product.price + 150
+                    second_order_total = second_order * product.price + 150
+                else:
+                    first_order_total = first_order * product.price + 500
+                    second_order_total = second_order * product.price + 500
+                product.quantity = 0
+                product.selled = int(product.selled) + int(request.POST['quantity'])
+                product.save()
+                Order.objects.create(
+                    client = request.user,
+                    item = product,
+                    status = "En proceso",
+                    shiping = request.POST['shiping'],
+                    paying = request.POST['paying'],
+                    address = request.POST['address'],
+                    total = first_order_total,
+                    quantity = first_order,
+                )
+                Order.objects.create(
+                    client = request.user,
+                    item = product,
+                    status = "Pendiente",
+                    shiping = request.POST['shiping'],
+                    paying = request.POST['paying'],
+                    address = request.POST['address'],
+                    total = second_order_total,
+                    quantity = second_order,
+                )
+            else:
+                if request.POST['shiping'] == "DHL":
+                    total = int(product.price) * int(request.POST['quantity']) + 150
+                else:
+                    total = int(product.price) * int(request.POST['quantity']) + 500
+                product.quantity = int(product.quantity) - int(request.POST['quantity'])
+                product.selled = int(product.selled) + int(request.POST['quantity'])
+                product.save()
+                Order.objects.create(
+                    client = request.user,
+                    item = product,
+                    status = "En proceso",
+                    shiping = request.POST['shiping'],
+                    paying = request.POST['paying'],
+                    address = request.POST['address'],
+                    total = total,
+                    quantity = request.POST['quantity'],
+                )
+        else:
+            item = product,
+            shiping = request.POST['shiping']
+            paying = request.POST['paying']
+            address = request.POST['address']
+            quantity = request.POST['quantity']
+            messages.success(request,"Ocurrió un error; Por favor, intenta de nuevo...")
+            return render(request,'checkout.html',{
+                'item':item,
+                'shiping':shiping,
+                'paying':paying,
+                'address':address,
+                'quantity':quantity,
+                'product':product,
+            })
+    return redirect('thanks')

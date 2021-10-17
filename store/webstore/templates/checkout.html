@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+{% endif %}
+<div class="container">
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h1 class="display-5">{{product.name}}</h1>
+            <h3>{{product.author}}</h3>
+        </div>
+        <img src="{{product.imageURL}}" style="border-radius: 21px 21px 21px 21px;">
+        <p>Disponibles: {{product.quantity}}</p>
+    </div>
+
+    <form method="POST" action="{% url 'payment' %}">
+        {% csrf_token %}
+        <hr>
+        <div class="form-group">
+            <h4>Producto</h4>
+            <select class="form-select" name="item" value="{{ item }}">
+                <option value="{{product.id}}">{{product}} ${{product.price}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <h4>Método de pago</h4>
+            <select class="form-select" name="paying" value="{{ paying }}">
+                <option value="Paypal">Paypal</option>
+                <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                <option value="Tarjeta de débito">Tarjeta de débito</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <h4>Método de envío</h4>
+            <select class="form-select" name="shiping" value="{{ shiping }}">
+                <option value="DHL">DHL (Envío normal $150.00)</option>
+                <option value="Fedex">Fedex (Envío express $500.00)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <h4>Dirección de entrega</h4>
+            <input type="text" class="form-control" placeholder="Dirección de entrega del paquete" value="{{ address }}" name="address">
+        </div>
+        <div class="form-group">
+            <h4>Cantidad</h4>
+            <input type="number" class="form-control" placeholder="Cantidad de libros deseada" value="{{ quantity }}" name="quantity">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Procesar orden</button>
+    </form>
+</div>
+<br>
+
+{% endblock %}

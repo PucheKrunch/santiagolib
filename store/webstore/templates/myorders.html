@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br>
+<br>
+<br>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Libro</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{order.item}}</td>
+                    <td>{{order.date_ordered}}</td>
+                    <td>{{order.status}}</td>
+                    <td>${{order.total}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
