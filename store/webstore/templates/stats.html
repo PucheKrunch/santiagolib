@@ -46,7 +46,28 @@
     <br>
     <br>
     <div class="container">
-        {% for order in orders %}
+        <h3>Ventas de libros</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Libro</th>
+                    <th scope="col">Editorial</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Ventas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sell in sells %}
+                    <tr>
+                        <td>{{sell.name}}</td>
+                        <td>{{sell.publisher}}</td>
+                        <td>{{sell.price}}</td>
+                        <td>{{sell.selled}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Ordenes completadas</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -58,31 +79,17 @@
                 </tr>
             </thead>
             <tbody>
+                {% for f in finished %}
                     <tr>
-                        <td>{{order.client}}</td>
-                        <td>{{order.item}}</td>
-                        <td>{{order.date_ordered}}</td>
-                        <td>{{order.status}}</td>
-                        <td>${{order.total}}</td>
+                        <td>{{f.client}}</td>
+                        <td>{{f.item}}</td>
+                        <td>{{f.date_ordered}}</td>
+                        <td>{{f.status}}</td>
+                        <td>${{f.total}}</td>
                     </tr>
+                {% endfor %}
             </tbody>
         </table>
-        <form action="{% url 'update_status' %}" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="hidden" value="{{ order.id }}" name="id">
-                <p>Cambiar estado de la orden</p>
-                <select class="form-select" name="status" value="{{ order.status }}">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En proceso">En proceso</option>
-                    <option value="Enviado">Enviado</option>
-                    <option value="Entregado">Entregado</option>
-                </select>
-                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Cambiar</button>
-            </div>
-        </form>
-        <hr>
-        {% endfor %}
     </div>
 
     <style>

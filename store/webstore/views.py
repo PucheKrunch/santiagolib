@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 # Create your views here.
 @login_required(login_url='guest')
@@ -313,3 +314,18 @@ def update_status(request):
     order.status = str(request.POST['status'])
     order.save()
     return redirect('status')
+
+@login_required(login_url='login')
+def stats(request):
+    if not request.user.is_superuser:
+        return redirect('apanel')
+    else:
+        sells = Product.objects.order_by('-selled')
+        finished = Order.objects.filter(status='Entregado')
+
+
+        return render(request,"stats.html",{
+            'role':'Superusuario',
+            'sells':sells,
+            'finished':finished,
+            })

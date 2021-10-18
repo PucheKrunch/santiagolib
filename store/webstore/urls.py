@@ -19,5 +19,6 @@ urlpatterns = [
     path('thanks/',views.thanks, name='thanks'),
     path('best/',views.best, name='best'),
     path('status/',views.status, name='status'),
+    path('stats/',views.stats, name='stats'),
     path('ustatus/',views.update_status, name='update_status'),
 ]
